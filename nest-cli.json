@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/mav-housing-config",
   "projects": {
+    "auth-server": {
+      "type": "application",
+      "root": "apps/auth-server",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth-server/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth-server/tsconfig.app.json"
+      }
+    },
     "comms-server": {
       "type": "application",
       "root": "apps/comms-server",
