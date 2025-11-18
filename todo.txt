@@ -17,3 +17,9 @@ Stage:
 TODO : Add make a common auth library.. and be able to share the auth guards for all other servers / apps
 Setup Typedoc
 npm install typedoc --save-dev
+
+
+18 Nov, 2025
+-------------
+Experimented with Bcrypted..
+Now Implement completly

@@ -1,10 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserSignup } from '../entity/user.dto';
-import fs, { access } from 'fs';
+import { UserSignup } from '../entity/userSignUp.dto';
 import { JwtService } from '@nestjs/jwt';
-import AccessToken from 'twilio/lib/jwt/AccessToken';
-import { Role } from '../entity/role.enum';
 import { randomUUID } from 'crypto';
+import { sampleUserCred } from './mock/sample_user_cred';
+import bcrypt from 'node_modules/bcryptjs';
 
 @Injectable()
 export class AuthServerService {
@@ -19,34 +18,24 @@ export class AuthServerService {
       return false
     }
 
+    // Hash the password with 10 rounds of salting and replace plain text password with hash
+    user.password = await bcrypt.hash(user.password, 10)
     this.userdb.push(user)
     console.log(user)
     return true
   }
 
   async loadMockUserCred(){
-    fs.readFile('/home/axjh03/mav-housing-config/apps/auth-server/entity/sample_user_cred.json', 'utf-8', (err, data) => {
-      if(err){
-        console.log("Error Reading File: ", err)
-        return
-      }
-      try {
-        this.userdb = JSON.parse(data);
-        console.log("Loaded Users:", this.userdb);
-      } catch (e) {
-        console.log("JSON Parse Error:", e);
-      }
-    })
+    for(const user of sampleUserCred){
+        user.password = await bcrypt.hash(user.password, 10)
+        this.userdb.push(user)
+    }
   }
 
   // READ
-  getHello():string{
-    return 'Hello world'
-  }
-
   getAllUser(){
     return this.userdb
-  }
+  }  
 
   // UPDATE
 
@@ -56,8 +45,6 @@ export class AuthServerService {
   async findOne(username:string):Promise<UserSignup | undefined>{
     return this.userdb.find(user => user.netId === username)
   }
-
-
 
   // AUTH STUFF
   async signin(netId:string, password:string){
@@ -76,5 +63,23 @@ export class AuthServerService {
         access_token: await this.jwtService.signAsync(payload)
       }
     }
+  }
+
+  // REMOVE LATER
+  async checkPassword(netId:string, password:string){
+    const userTemp = await this.findOne(netId)
+    console.log(userTemp)
+    if(userTemp){
+      const isMatch = await bcrypt.compare(password, userTemp.password)
+      if(isMatch){
+        console.log("bcrypt password check worked!")
+        return
+      }
+      else{
+      console.log("maybe wrong password?")
+      return
+      }
+    }
+    return "not found"
   }
 }

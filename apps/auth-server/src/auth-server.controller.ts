@@ -1,6 +1,6 @@
 import { Body, Query, Controller, Get, Patch, Post, HttpCode, HttpStatus, UseGuards, Request} from '@nestjs/common';
 import { AuthServerService } from './auth-server.service';
-import { UserSignup } from '../entity/user.dto';
+import { UserSignup } from '../entity/userSignUp.dto';
 import { ApiTags, ApiQuery, ApiOperation, ApiResponse, ApiBody, ApiHeader, ApiBearerAuth } from '@nestjs/swagger';
 import { UserSignIn } from '../entity/signin.dto';
 import { BaseAuthGuard } from './guards/baseauth.guard';
@@ -8,11 +8,6 @@ import { BaseAuthGuard } from './guards/baseauth.guard';
 @Controller("auth")
 export class AuthServerController {
   constructor(private readonly authServerService: AuthServerService) {}
-
-  @Get()
-  getHello(): string {
-    return this.authServerService.getHello();
-  }
 
   @Post('create-new')
   @ApiOperation({summary:'Creates new user'})
@@ -22,10 +17,11 @@ export class AuthServerController {
       default: {
         value: {
           email: 'john@example.com',
-          fName: 'John',
-          lName: 'Doe',
-          netId:'axjh03',
+          fName: 'AALOK',
+          lName: 'JHA',
+          netId:'aalokvault',
           password: 'P@ssw0rd123',
+          role: 'guest'
         },
       },
     },
@@ -84,5 +80,13 @@ export class AuthServerController {
   @ApiResponse({ status: 200, description: 'Returns the logged-in user payload' })
   testBaseAuth(@Request() req) {
     return req.user;
+  }
+
+  @Get('check-bcrypt-password')
+  @ApiQuery({ name: 'password', required: true, type: String })
+  @ApiQuery({ name: 'netId', required: true, type: String })
+  checkPassword(@Query('netId') netId: string, 
+                @Query('password') password:string){
+    return this.authServerService.checkPassword(netId, password)
   }
 }

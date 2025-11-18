@@ -11,7 +11,7 @@ export class UserSignup{
 
     @ApiProperty()
     @IsOptional()
-    readonly mName:string
+    readonly mName?:string
 
     @ApiProperty()
     @IsNotEmpty()
@@ -29,11 +29,10 @@ export class UserSignup{
     @ApiProperty()
     @IsNotEmpty()
     @ValidatePassword() // Custom Decorator that Validates based on UTA Password requirements
-    readonly password:string    
+    password:string    
 
     @ApiProperty()
-    @IsOptional()
     @IsEnum(Role)
-    readonly role?: Role // Defaults to undefined
+    readonly role: Role // Defaults to undefined
 
 }
