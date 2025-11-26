@@ -1,2 +1,130 @@
 Make Users Table, for SignIn / SignUP Part 
 Make auth-server accessible
+
+
+BRAINSTORM WITH GPT
+-----------------------------------------------------------------
+
+Email Flow
+--
+Student sends email to blaze@mavhousing.com
+    ↓
+SendGrid receives it (they're your mail server)
+    ↓
+SendGrid POSTs to: https://yourserver.com/webhooks/inbound-email
+    ↓
+Your controller processes it → calls Blaze AI
+    ↓
+You send reply email via SendGrid API
+    ↓
+Student gets response
+
+SMS Flow
+--
+Student texts your Twilio number (e.g., +1-555-123-4567)
+    ↓
+Twilio receives it (they own the number)
+    ↓
+Twilio POSTs to: https://yourserver.com/webhooks/inbound-sms
+    ↓
+Your controller processes it → calls Blaze AI
+    ↓
+You send reply SMS via Twilio API
+    ↓
+Student gets response
+
+For Email (SendGrid)
+1. A domain name
+
+Like mavhousing.com or use a subdomain like mail.mavhousing.com
+
+2. SendGrid account
+
+Free tier is fine for testing
+
+3. DNS configuration
+
+Point your domain's MX records to SendGrid's servers
+This makes SendGrid your mail server
+
+4. SendGrid dashboard setup
+
+Tell SendGrid "when you receive emails, POST them to this URL"
+The URL is your server endpoint like https://yourserver.com/webhooks/inbound-email
+
+5. An HTTP endpoint in your backend
+
+Just a regular POST route that receives the email data
+Extracts sender, message text, and subject
+Processes it (call Blaze AI)
+Sends a reply back using SendGrid's send API
+
+
+For SMS (Twilio)
+1. Twilio account
+
+Costs money - they charge per SMS sent/received
+Free trial gives you credits for testing
+
+2. Buy a phone number from Twilio
+
+Like +1-555-123-4567
+This is the number students text
+
+3. Twilio dashboard setup
+
+Tell Twilio "when this number gets a text, POST it to this URL"
+The URL is your server endpoint like https://yourserver.com/webhooks/inbound-sms
+
+4. An HTTP endpoint in your backend
+
+Just a regular POST route that receives the SMS data
+Extracts sender phone number and message text
+Processes it (call Blaze AI)
+Sends a reply back using Twilio's send API
+
+
+The Setup Steps (No Code)
+Email Setup:
+
+Register domain or use existing
+Create SendGrid account
+Add your domain to SendGrid
+Update your domain's DNS to point to SendGrid
+Configure SendGrid to webhook your server
+Create an endpoint in your comms-server to receive POSTs
+Test by emailing your address
+
+SMS Setup:
+
+Create Twilio account and add payment
+Buy a phone number from Twilio
+Configure that number to webhook your server
+Create an endpoint in your comms-server to receive POSTs
+Test by texting your number
+
+
+For Local Testing
+You need ngrok (or similar tunneling tool)
+
+Your laptop is localhost - Twilio/SendGrid can't reach it
+ngrok creates a public URL that forwards to your localhost
+Put the ngrok URL in Twilio/SendGrid dashboards temporarily
+Now you can test locally
+
+
+Cost Reality Check
+SendGrid Email:
+
+Free tier: 100 emails/day forever
+Should be enough for your project
+
+Twilio SMS:
+
+~$1/month for the phone number
+~$0.0075 per SMS sent
+~$0.0075 per SMS received
+If 100 students each send 10 texts = $15
+Might be expensive for a student project
+
+Recommendation: Build email inbound first (free), add SMS only if you have budget.

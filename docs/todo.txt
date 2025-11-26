@@ -23,3 +23,15 @@ npm install typedoc --save-dev
 -------------
 Experimented with Bcrypted..
 Now Implement completly
+
+
+25 Nov, 2025
+------------
+Added RBAC with multi role support
+
+Will Build comms-server next (email/SMS with templates), then set up environment configs (LOCAL with Docker Compose, QA with GCP Cloud SQL), and finally build internal-API with domain logic for housing and maintenance.
+
+
+26 Nov, 2025
+---------------
+checking If Send Email works
