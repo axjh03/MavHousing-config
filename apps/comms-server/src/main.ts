@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('Comms Server API')
     .setDescription('API Playground for testing coms server APIs')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   
   const documentFactory = () => SwaggerModule.createDocument(app, config)

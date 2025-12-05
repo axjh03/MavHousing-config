@@ -5,9 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { EmailController } from './email/email.controller';
 import { EmailService } from './email/email.service';
+import { BaseAuthGuard } from 'apps/auth-server/src/guards/baseauth.guard';
+import { AuthServerModule } from 'apps/auth-server/src/auth-server.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), EmailModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), EmailModule, AuthServerModule],
   controllers: [CommsServerController, EmailController],
   providers: [CommsServerService, EmailService],
 })

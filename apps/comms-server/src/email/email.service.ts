@@ -1,33 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
+import { welcome } from './templates/welcome';
 
 @Injectable()
 export class EmailService {
+  private resend: Resend;
   constructor(private config: ConfigService) {
-    // hardcoding that it's gonna be string for now
-    // urghhhh Typescript
-    sgMail.setApiKey(this.config.get<string>('SENDGRID_API_KEY')!);
+    this.resend = new Resend(this.config.get<string>('RESEND_API'));
   }
 
   async sendTestEmail() {
     const msg = {
-      to: 'axj2203@mavs.uta.edu',
-      from: 'axjh03@gmail.com',
+      to: 'axjh03@gmail.com',
+      from: 'Acme <onboarding@resend.dev>',
       subject: 'Testing SendGrid Email Connection',
       text: 'Delivery of this email means that the email connection works',
       html: '<strong>Test</strong>',
     };
-
-    sgMail.send(msg);
-
+  
     try{
-      sgMail.send(msg);
+      await this.resend.emails.send(msg);
+      return "Mail Sent"
     }
     catch(e){
-      console.log(e)
-      return "Mail not sent"
+      console.error('Failed to send email:', e);
+      return `Mail not sent: ${e.message}`
     }
-    return "Mail Sent"
   }
+
+
+  // 1 Account Created
+  // say we welcome a Full Name, created
+  
+  async welcomeUser(reciever:string, sender:string, subject:string, text:string, userDetails:{fName:string, lName:string, uname:string}){
+    const html = `<h3>Hello ${userDetails.fName} ${userDetails.lName} (${userDetails.uname})</h3><br>${welcome.accCreated}`
+
+    const msg = {to: reciever, from:sender, subject:subject, text:text, html:html}
+
+    try{
+      await this.resend.emails.send(msg)
+    }
+    catch(e){
+      console.error("Failed to send email: ", e)
+      return `Mail not sent : ${e.message}`
+    }
+
+  }
+
 }

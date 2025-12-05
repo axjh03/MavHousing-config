@@ -8,6 +8,7 @@ async function bootstrap() {
   .setTitle("Internal-API for MavHousing")
   .setDescription("All Internal worings + Database")
   .setVersion("1.0")
+  .addBearerAuth()
   .build()
 
   const documentFactory = () => SwaggerModule.createDocument(app, config)
