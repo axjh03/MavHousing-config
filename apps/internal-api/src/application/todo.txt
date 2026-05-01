@@ -1,9 +1,0 @@
-The "Final Step" (Lease Initialization)
-An application is just a request. Once the status is changed to "Approved," you need a way to move that data into the Lease table:
-
-POST /lease/initialize/{appId}: Triggered by Staff/Admin approval. This creates the Lease ID, sets the "Message Group" name, and links the students to the unit.
----------
-Document Verification (Staff Action)
-While PATCH /application/update-status handles the final "Approve/Deny," you might want a specific endpoint for the "Verification Gate":
-
-PATCH /application/verify-docs/{appId}: Specifically for staff to mark ID/Enrollment documents as "Verified" without necessarily approving the whole application yet.
