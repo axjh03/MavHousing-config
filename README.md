@@ -59,16 +59,16 @@ cd MavHousing-config
 ```
 
 ### 2. Install Dependencies
-Dependencies must be installed for both the backend services and the specific Next.js web application:
+Dependencies must be installed in both the root directory (for backend services) and the `apps/web` directory (for the Next.js frontend). You must run `npm install` in both places:
 
-#### **Root Monorepo (Backend)**
 ```bash
+# 1. Install root dependencies
 npm install
-```
 
-#### **Web Application (Frontend)**
-```bash
-cd apps/web && npm install
+# 2. Install web application dependencies
+cd apps/web
+npm install
+cd ../..
 ```
 
 ### 3. Configure Environment Variables
