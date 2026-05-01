@@ -1,3 +1,0 @@
-# How to seed mockup data?
- can use ts-node or just do `npm run seed`
- But first generate a client `npx prisma generate`

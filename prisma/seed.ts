@@ -19,8 +19,7 @@ async function main() {
   console.log('🌱 Starting comprehensive database seed...\n');
 
   try {
-    // Clear existing data and reset sequences
-    console.log('🗑️  Clearing existing data and resetting sequences...');
+    console.log('Clearing existing data and resetting sequences...');
     const tablenames = await prisma.$queryRaw<
       Array<{ tablename: string }>
     >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
@@ -36,23 +35,23 @@ async function main() {
         `TRUNCATE TABLE ${tables} RESTART IDENTITY CASCADE;`,
       );
     }
-    console.log('   ✅ Database cleared\n');
+    console.log('Database cleared\n');
 
     // 1. Create Properties
-    console.log('🏢 Creating properties...');
+    console.log('Creating properties...');
     const properties: any[] = [];
     for (const prop of mockProperties) {
       const created = await prisma.property.create({ data: prop });
       properties.push(created);
     }
-    console.log(`   ✅ Created ${properties.length} properties`);
+    console.log(`Created ${properties.length} properties`);
     properties.forEach((prop) =>
       console.log(`      - ${prop.name} (${prop.leaseType})`),
     );
     console.log();
 
     // 2. Create Users
-    console.log('👥 Creating users...');
+    console.log('Creating users...');
     const users: any[] = [];
     for (const user of mockUsers) {
       const hashedPassword = await bcrypt.hash(user.passwordHash, 10);
@@ -64,25 +63,25 @@ async function main() {
       });
       users.push(created);
     }
-    console.log(`   ✅ Created ${users.length} users\n`);
+    console.log(`Created ${users.length} users\n`);
 
     // 3. Create Units
-    console.log('🏠 Creating units...');
+    console.log('Creating units...');
     const units: any[] = [];
     for (const unit of mockUnits) {
       const created = await prisma.unit.create({ data: unit });
       units.push(created);
     }
-    console.log(`   ✅ Created ${units.length} units\n`);
+    console.log(`Created ${units.length} units\n`);
 
     // 4. Create Rooms (only for BY_ROOM and BY_BED properties)
-    console.log('🚪 Creating rooms...');
+    console.log('Creating rooms...');
     const rooms: any[] = [];
     for (const room of mockRooms) {
       const created = await prisma.room.create({ data: room });
       rooms.push(created);
     }
-    console.log(`   ✅ Created ${rooms.length} rooms\n`);
+    console.log(`Created ${rooms.length} rooms\n`);
 
     // 5. Create Beds (only for BY_BED properties)
     console.log('🛏️  Creating beds...');
@@ -92,17 +91,17 @@ async function main() {
       const created = await prisma.bed.create({ data: bedData });
       beds.push(created);
     }
-    console.log(`   ✅ Created ${beds.length} beds\n`);
+    console.log(`Created ${beds.length} beds\n`);
 
     // 6. Create Applications
-    console.log('📝 Creating applications...');
+    console.log('Creating applications...');
     const applications: any[] = [];
     for (const app of mockApplications) {
       const created = await prisma.application.create({ data: app });
       applications.push(created);
     }
-    console.log(`   ✅ Created ${applications.length} applications`);
-    console.log('      Status breakdown:');
+    console.log(`Created ${applications.length} applications`);
+    console.log('Status breakdown:');
     console.log(
       `      - SUBMITTED: ${applications.filter((a) => a.status === 'SUBMITTED').length}`,
     );
@@ -114,14 +113,14 @@ async function main() {
     );
 
     // 7. Create Leases
-    console.log('📋 Creating leases...');
+    console.log('Creating leases...');
     const leases: any[] = [];
     for (const lease of mockLeases) {
       const created = await prisma.lease.create({ data: lease });
       leases.push(created);
     }
-    console.log(`   ✅ Created ${leases.length} leases`);
-    console.log('      Lease type breakdown:');
+    console.log(`Created ${leases.length} leases`);
+    console.log('Lease type breakdown:');
     console.log(
       `      - BY_UNIT: ${leases.filter((l) => l.leaseType === 'BY_UNIT').length} (no rooms/beds)`,
     );
@@ -133,14 +132,14 @@ async function main() {
     );
 
     // 8. Create Occupants
-    console.log('👫 Creating occupants...');
+    console.log('Creating occupants...');
     const occupants: any[] = [];
     for (const occupant of mockOccupants) {
       const created = await prisma.occupant.create({ data: occupant });
       occupants.push(created);
     }
-    console.log(`   ✅ Created ${occupants.length} occupants`);
-    console.log('      Occupant type breakdown:');
+    console.log(`Created ${occupants.length} occupants`);
+    console.log('Occupant type breakdown:');
     console.log(
       `      - LEASE_HOLDER: ${occupants.filter((o) => o.occupantType === 'LEASE_HOLDER').length}`,
     );
@@ -149,13 +148,13 @@ async function main() {
     );
 
     // 9. Create Payments
-    console.log('💳 Creating payments...');
+    console.log('Creating payments...');
     const payments: any[] = [];
     for (const payment of mockPayments) {
       const created = await prisma.payment.create({ data: payment });
       payments.push(created);
     }
-    console.log(`   ✅ Created ${payments.length} payments`);
+    console.log(`Created ${payments.length} payments`);
     const totalPaid = payments.reduce(
       (sum, p) => sum + Number(p.amountPaid),
       0,
@@ -163,14 +162,14 @@ async function main() {
     console.log(`      Total revenue: $${totalPaid.toFixed(2)}\n`);
 
     // 10. Create Maintenance Requests
-    console.log('🔧 Creating maintenance requests...');
+    console.log('Creating maintenance requests...');
     const maintenance: any[] = [];
     for (const req of mockMaintenanceRequests) {
       const created = await prisma.maintenanceRequest.create({ data: req });
       maintenance.push(created);
     }
-    console.log(`   ✅ Created ${maintenance.length} maintenance requests`);
-    console.log('      Status breakdown:');
+    console.log(`Created ${maintenance.length} maintenance requests`);
+    console.log('Status breakdown:');
     console.log(
       `      - OPEN: ${maintenance.filter((m) => m.status === 'OPEN').length}`,
     );
@@ -200,8 +199,8 @@ async function main() {
       `      - STRUCTURAL: ${maintenance.filter((m) => m.category === 'STRUCTURAL').length}\n`,
     );
 
-    console.log('✨ Database seeding completed successfully!');
-    console.log('\n📊 SUMMARY:');
+    console.log('Database seeding completed successfully!');
+    console.log('\nSUMMARY:');
     console.log(`   Users: ${users.length}`);
     console.log(`   Properties: ${properties.length}`);
     console.log(`   Units: ${units.length}`);
@@ -212,9 +211,9 @@ async function main() {
     console.log(`   Occupants: ${occupants.length}`);
     console.log(`   Payments: ${payments.length}`);
     console.log(`   Maintenance Requests: ${maintenance.length}`);
-    console.log('\n🚀 Ready to go! Try: npx prisma studio');
+    console.log('\nReady to go! Try: npx prisma studio');
   } catch (error) {
-    console.error('❌ Error during seeding:', error);
+    console.error('Error during seeding:', error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
