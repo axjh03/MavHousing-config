@@ -89,11 +89,19 @@ Your `.env` file must be configured with following secure keys:
 | **Jobs** | `REDIS_HOST` | Hostname for BullMQ/Redis (Default: localhost). |
 | | `REDIS_PORT` | Port for BullMQ/Redis (Default: 6379). |
 | **Communication** | `RESEND_API` | Transactional email key for report delivery. |
+| | `WEBHOOK_PROXY_URL` | Smee.io proxy URL for Resend Webhooks. |
 | **AI/Storage** | `GEMINI_API_KEY` | Google Gemini key for intelligent OCR systems. |
 | | `R2_ACCESS_KEY_ID` | Cloudflare R2 Access ID. |
 | | `R2_SECRET_ACCESS_KEY` | Cloudflare R2 Secret Key. |
 | | `R2_BUCKET_NAME` | Main media bucket name. |
 | | `R2_ENDPOINT` | Cloudflare Distributed Endpoint URL. |
+
+
+#### **Resend Webhooks (Local Development)**
+To receive incoming emails locally, you must configure a proxy using [smee.io](https://smee.io/).
+1. Visit [smee.io](https://smee.io/) and click "Start a new channel".
+2. Copy the generated Webhook Proxy URL and update the `WEBHOOK_PROXY_URL` variable in your `.env` file.
+3. In your Resend dashboard, add a new webhook pointing to your smee.io URL and configure it to listen for the `email.received` event.
 
 ### 4. Set Up the Database
 
@@ -119,6 +127,14 @@ To quickly reset the database, apply all migrations, and re-seed in one command,
 ```
 
 ### 5. Run the Application
+
+To start all backend microservices simultaneously, use the provided script:
+
+```bash
+./run-all.sh
+```
+
+Alternatively, you can run the primary API service:
 
 ```bash
 npm run start:dev internal-api
